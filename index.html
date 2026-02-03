@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelime Oyunu</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="nature-theme">
+
+<!-- ÜST MENÜ -->
+<div class="top-nav">
+    <div class="menu">
+        <i class="fas fa-bars"></i>
+        <div class="menu-dropdown">
+            <div onclick="openSettings()"><i class="fas fa-cog"></i> Ayarlar</div>
+            <div onclick="openHowTo()"><i class="fas fa-question-circle"></i> Nasıl Oynanır</div>
+            <div onclick="toggleDarkMode()" class="dark-mode-toggle">
+                <i class="fas fa-moon"></i> <span>Koyu Mod</span>
+            </div>
+            <div onclick="goToMainMenu()"><i class="fas fa-home"></i> Ana Menü</div>
+            <div onclick="exitGame()"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</div>
+        </div>
+    </div>
+    <div class="game-title">
+        <i class="fas fa-brain" style="color: #4A90E2;"></i> 
+        <span>Akıl Oyunu</span>
+    </div>
+</div>
+
+<!-- BAŞLANGIÇ -->
+<div id="startScreen" class="start-screen">
+    <div class="start-container">
+        <h1><i class="fas fa-puzzle-piece"></i> Kelime Bağlantısı</h1>
+        <p class="tagline">Zekanı test et, kelimeler arasındaki bağı bul!</p>
+        <div class="stats-box">
+            <div class="stat">
+                <i class="fas fa-question-circle" style="color: #4A90E2;"></i>
+                <span>30 Soru</span>
+            </div>
+            <div class="stat">
+                <i class="fas fa-clock" style="color: #50C878;"></i>
+                <span>Zamanlı</span>
+            </div>
+            <div class="stat">
+                <i class="fas fa-star" style="color: #FFD700;"></i>
+                <span>Puanlı</span>
+            </div>
+        </div>
+        <button onclick="startGame()" class="start-btn">
+            <i class="fas fa-play"></i> OYUNU BAŞLAT
+        </button>
+    </div>
+</div>
+
+<!-- AYARLAR -->
+<div id="settings" class="modal hidden">
+    <div class="modal-content">
+        <h2><i class="fas fa-cog" style="color: #4A90E2;"></i> Ayarlar</h2>
+        <div class="theme-selector">
+            <h3>🎨 Tema Seçimi</h3>
+            <div class="theme-buttons">
+                <button class="theme-btn nature-theme-btn" onclick="setTheme('nature-theme')">
+                    <i class="fas fa-leaf"></i> Doğal
+                </button>
+                <button class="theme-btn ocean-theme-btn" onclick="setTheme('ocean-theme')">
+                    <i class="fas fa-water"></i> Okyanus
+                </button>
+                <button class="theme-btn sunset-theme-btn" onclick="setTheme('sunset-theme')">
+                    <i class="fas fa-sun"></i> Gün Batımı
+                </button>
+                <button class="theme-btn dark-theme-btn" onclick="setTheme('dark-theme')">
+                    <i class="fas fa-moon"></i> Koyu
+                </button>
+            </div>
+        </div>
+        <button onclick="closeModals()" class="close-btn">
+            <i class="fas fa-times"></i> Kapat
+        </button>
+    </div>
+</div>
+
+<!-- NASIL OYNANIR -->
+<div id="howto" class="modal hidden">
+    <div class="modal-content">
+        <h2><i class="fas fa-question-circle" style="color: #4A90E2;"></i> Nasıl Oynanır?</h2>
+        <div class="instructions">
+            <div class="instruction-step">
+                <div class="step-number">1</div>
+                <p>Üstte verilen kelime grubuna en uygun kelimeyi seçin</p>
+            </div>
+            <div class="instruction-step">
+                <div class="step-number">2</div>
+                <p>Doğru seçerseniz puan kazanırsınız ve zaman bonusu alırsınız</p>
+            </div>
+            <div class="instruction-step">
+                <div class="step-number">3</div>
+                <p>Yanlış seçerseniz canınız azalır</p>
+            </div>
+            <div class="instruction-step">
+                <div class="step-number">4</div>
+                <p>Tüm soruları bitirmeye çalışın!</p>
+            </div>
+        </div>
+        <button onclick="closeModals()" class="close-btn">
+            <i class="fas fa-times"></i> Kapat
+        </button>
+    </div>
+</div>
+
+<!-- OYUN -->
+<div id="game" class="game hidden">
+    <div class="game-header">
+        <div class="hud">
+            <div class="hud-item heart">
+                <i class="fas fa-heart"></i>
+                <span id="lives">3</span>
+            </div>
+            <div class="hud-item clock">
+                <i class="fas fa-stopwatch"></i>
+                <span id="timer">00:00</span>
+            </div>
+            <div class="hud-item star">
+                <i class="fas fa-star"></i>
+                <span id="score">0</span>
+            </div>
+            <div class="hud-item check">
+                <i class="fas fa-check-circle"></i>
+                <span id="progress">0/30</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="question-container">
+        <div class="question-label">
+            <i class="fas fa-lightbulb"></i> Hangi Kelime Uyuyor?
+        </div>
+        <div class="top-box" id="question"></div>
+        <div class="hint">Verilen kelimelerle en ilişkili kelimeyi seçin</div>
+    </div>
+
+    <div class="message-container">
+        <div id="message" class="message"></div>
+    </div>
+
+    <div class="options-container">
+        <div class="options-label">
+            <i class="fas fa-mouse-pointer"></i> Seçenekler
+        </div>
+        <div class="bottom-box" id="options"></div>
+    </div>
+</div>
+
+<!-- KAZANMA EKRANI -->
+<div id="winScreen" class="result-screen hidden">
+    <div class="result-content win">
+        <div class="result-icon">
+            <i class="fas fa-trophy"></i>
+        </div>
+        <h2>Tebrikler! 🎉</h2>
+        <p class="result-message">Tüm soruları başarıyla tamamladınız!</p>
+        
+        <div class="result-stats">
+            <div class="stat-box">
+                <i class="fas fa-stopwatch"></i>
+                <div class="stat-value" id="finalTime">00:00</div>
+                <div class="stat-label">Süre</div>
+            </div>
+            <div class="stat-box">
+                <i class="fas fa-star"></i>
+                <div class="stat-value" id="finalScore">0</div>
+                <div class="stat-label">Puan</div>
+            </div>
+            <div class="stat-box">
+                <i class="fas fa-check-circle"></i>
+                <div class="stat-value">30/30</div>
+                <div class="stat-label">Doğru</div>
+            </div>
+        </div>
+        
+        <div class="result-buttons">
+            <button onclick="restartGame()" class="result-btn play-again">
+                <i class="fas fa-redo"></i> Tekrar Oyna
+            </button>
+            <button onclick="goToMainMenu()" class="result-btn main-menu">
+                <i class="fas fa-home"></i> Ana Menü
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- KAYBETME EKRANI -->
+<div id="loseScreen" class="result-screen hidden">
+    <div class="result-content lose">
+        <div class="result-icon">
+            <i class="fas fa-gamepad"></i>
+        </div>
+        <h2>Tekrar Dene! 💪</h2>
+        <p class="result-message">Canlarınız bitti ama pes etmeyin!</p>
+        
+        <div class="result-stats">
+            <div class="stat-box">
+                <i class="fas fa-stopwatch"></i>
+                <div class="stat-value" id="loseTime">00:00</div>
+                <div class="stat-label">Süre</div>
+            </div>
+            <div class="stat-box">
+                <i class="fas fa-star"></i>
+                <div class="stat-value" id="loseScore">0</div>
+                <div class="stat-label">Puan</div>
+            </div>
+            <div class="stat-box">
+                <i class="fas fa-times-circle"></i>
+                <div class="stat-value" id="wrongAnswers">0</div>
+                <div class="stat-label">Yanlış</div>
+            </div>
+        </div>
+        
+        <div class="result-buttons">
+            <button onclick="restartGame()" class="result-btn play-again">
+                <i class="fas fa-redo"></i> Tekrar Dene
+            </button>
+            <button onclick="goToMainMenu()" class="result-btn main-menu">
+                <i class="fas fa-home"></i> Ana Menü
+            </button>
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
